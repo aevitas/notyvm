@@ -1,4 +1,4 @@
-package main
+package api
 
 import (
 	"errors"
@@ -20,8 +20,8 @@ type Server struct {
 func (s *Server) Init() {
 	s.Router = gin.Default()
 
-	s.Router.GET("v1/name/random", s.RandomName)
-	s.Router.GET("v1/name/random/:count", s.RandomNameMany)
+	s.Router.GET("v1/persons/random", s.GetSeededName)
+	s.Router.GET("v1/persons/:seed", s.GenerateRandomNames)
 }
 
 func (s *Server) Start(ep string) {
@@ -41,15 +41,15 @@ func (s *Server) Ready() bool {
 	return s.Router != nil
 }
 
-type Persona struct {
+type Person struct {
 	Seed         int    `json:"seed"`
 	FirstName    string `json:"first_name"`
 	LastName     string `json:"last_name"`
 	EmailAddress string `json:"email_address"`
 }
 
-func (s *Server) RandomName(ctx *gin.Context) {
-	arg := ctx.Query("seed")
+func (s *Server) GetSeededName(ctx *gin.Context) {
+	arg := ctx.Param("seed")
 	seed, err := strconv.Atoi(arg)
 
 	if seed < 0 {
@@ -58,29 +58,31 @@ func (s *Server) RandomName(ctx *gin.Context) {
 	}
 
 	if err != nil {
-		seed = rng.RandomNumber()
+		ctx.AbortWithError(http.StatusBadRequest, err)
+		return
 	}
 
-	n := names.RandomName(seed)
+	fn, ln := names.GenerateName(seed)
 
-	p := Persona{Seed: seed, FirstName: n.FirstName, LastName: n.LastName, EmailAddress: strings.ToLower(fmt.Sprintf("%s.%s@notyvm.com", n.FirstName, n.LastName))}
+	p := Person{Seed: seed, FirstName: fn, LastName: ln, EmailAddress: strings.ToLower(fmt.Sprintf("%s.%s@notyvm.com", fn, ln))}
 
 	ctx.JSON(http.StatusOK, p)
 }
 
-func (s *Server) RandomNameMany(ctx *gin.Context) {
+func (s *Server) GenerateRandomNames(ctx *gin.Context) {
 	count := ctx.Param("count")
 	num, err := strconv.Atoi(count)
 
 	if err != nil {
 		num = 1
 	}
-	var ret []Persona
+
+	var ret []Person
 	for i := 0; i < num; i++ {
 		seed := rng.RandomNumber()
-		n := names.RandomName(seed)
+		fn, ln := names.GenerateName(seed)
 
-		p := Persona{Seed: seed, FirstName: n.FirstName, LastName: n.LastName, EmailAddress: strings.ToLower(fmt.Sprintf("%s.%s@notyvm.com", n.FirstName, n.LastName))}
+		p := Person{Seed: seed, FirstName: fn, LastName: ln, EmailAddress: strings.ToLower(fmt.Sprintf("%s.%s@notyvm.com", fn, ln))}
 		ret = append(ret, p)
 	}
 

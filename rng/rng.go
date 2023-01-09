@@ -16,7 +16,7 @@ func getRand() rand.Source {
 	_, err := crypto_rand.Read(entropy[:])
 
 	if err != nil {
-		log.Fatal("could not read 8 bytes of random entropy from crypto rand")
+		log.Fatal("could not read 8 bytes of entropy from crypto rand")
 	}
 
 	return rand.NewSource(int64(binary.LittleEndian.Uint64(entropy[:])))

@@ -1,7 +1,9 @@
 package main
 
+import "aevitas.dev/notyvm/api"
+
 func main() {
-	s := &Server{}
+	s := &api.Server{}
 
 	s.Init()
 	s.Start(":8080")

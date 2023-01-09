@@ -6,28 +6,11 @@ import (
 	"strings"
 )
 
-type Name struct {
-	FirstName string `json:"first_name"`
-	LastName  string `json:"last_name"`
-}
-
-func RandomFirstName(seed int) string {
-	n := getFirstNames()
-
-	return n[seed%len(n)]
-}
-
-func RandomLastName(seed int) string {
-	n := getLastNames()
-
-	return n[seed%len(n)]
-}
-
-func RandomName(seed int) *Name {
+func GenerateName(seed int) (string, string) {
 	fn := getFirstNames()
 	ln := getLastNames()
 
-	return &Name{FirstName: fn[seed%len(fn)], LastName: ln[seed%len(ln)]}
+	return fn[seed%len(fn)], ln[seed%len(ln)]
 }
 
 func getFirstNames() []string {
