@@ -1,4 +1,4 @@
-module aevitas.dev/notyvm
+module aevitas.dev/veiled
 
 go 1.19
 

@@ -24,9 +24,11 @@ func (s *Server) Start(ep string) {
 		log.Fatal("server isnt ready - make sure to init first")
 	}
 
-	err := http.ListenAndServe(ep, s.Router.Handler())
+	e := make(chan error)
 
-	if err != nil {
+	e <- http.ListenAndServe(ep, s.Router.Handler())
+
+	for err := range e {
 		log.Fatal(err)
 	}
 }

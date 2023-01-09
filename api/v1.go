@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"strings"
 
-	"aevitas.dev/notyvm/names"
-	"aevitas.dev/notyvm/rng"
+	"aevitas.dev/veiled/names"
+	"aevitas.dev/veiled/rng"
 	"github.com/gin-gonic/gin"
 )
 

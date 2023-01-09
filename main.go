@@ -1,6 +1,6 @@
 package main
 
-import "aevitas.dev/notyvm/api"
+import "aevitas.dev/veiled/api"
 
 func main() {
 	s := &api.Server{}
