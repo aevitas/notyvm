@@ -14,8 +14,8 @@ type Server struct {
 func (s *Server) Init() {
 	s.Router = gin.Default()
 
-	s.Router.GET("v1/persons/random", s.GetSeededName)
-	s.Router.GET("v1/persons/:seed", s.GenerateRandomNames)
+	s.Router.GET("v1/persons/random", s.GenerateRandomNames)
+	s.Router.GET("v1/persons/:seed", s.GetSeededName)
 }
 
 func (s *Server) Start(ep string) {
