@@ -35,13 +35,13 @@ func (s *Server) GetSeededName(ctx *gin.Context) {
 
 	fn, ln := names.GenerateName(seed)
 
-	p := Person{Seed: seed, FirstName: fn, LastName: ln, EmailAddress: strings.ToLower(fmt.Sprintf("%s.%s@notyvm.com", fn, ln))}
+	p := Person{Seed: seed, FirstName: fn, LastName: ln, EmailAddress: strings.ToLower(fmt.Sprintf("%s.%s@isveiled.com", fn, ln))}
 
 	ctx.JSON(http.StatusOK, p)
 }
 
 func (s *Server) GenerateRandomNames(ctx *gin.Context) {
-	count := ctx.Param("count")
+	count := ctx.Query("count")
 	num, err := strconv.Atoi(count)
 
 	if err != nil {
@@ -53,7 +53,7 @@ func (s *Server) GenerateRandomNames(ctx *gin.Context) {
 		seed := rng.RandomNumber()
 		fn, ln := names.GenerateName(seed)
 
-		p := Person{Seed: seed, FirstName: fn, LastName: ln, EmailAddress: strings.ToLower(fmt.Sprintf("%s.%s@notyvm.com", fn, ln))}
+		p := Person{Seed: seed, FirstName: fn, LastName: ln, EmailAddress: strings.ToLower(fmt.Sprintf("%s.%s@isveiled.com", fn, ln))}
 		ret = append(ret, p)
 	}
 
