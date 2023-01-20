@@ -42,17 +42,21 @@ func ProcessInboundEmail(ctx *gin.Context, cache *cache.Cache) error {
 		return errors.New("spam check didn't pass")
 	}
 
-	if len(msg.Recipients) > 0 {
+	if len(msg.Recipients) > 1 {
 		return errors.New("ignoring message with multiple recipients; we don't listen to cc or bcc")
 	}
 
 	for _, m := range msg.Recipients {
-		if !strings.Contains("@isveiled.com", m) && !strings.Contains("@veiled.io", m) {
+		if !strings.Contains(m, "@isveiled.com") && !strings.Contains(m, "@veiled.io") {
 			log.Printf("%s is not addressed to us; ignoring", m)
 			continue
 		}
 
-		inbox := make(map[string]map[uint64]email)
+		inbox := map[string]map[uint64]email{
+			m: {
+				ulid.Now(): email{Sender: "hello@veiled.io", SenderName: "Veiled", Subject: "Received messages will appear here."},
+			},
+		}
 		ib, f := cache.Get(m)
 
 		if f {
