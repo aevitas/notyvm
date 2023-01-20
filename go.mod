@@ -2,7 +2,12 @@ module aevitas.dev/veiled
 
 go 1.19
 
-require github.com/gin-gonic/gin v1.8.2
+require (
+	github.com/gin-gonic/gin v1.8.2
+	github.com/oklog/ulid v1.3.1
+	github.com/patrickmn/go-cache v2.1.0+incompatible
+	github.com/sendgrid/sendgrid-go v3.12.0+incompatible
+)
 
 require (
 	github.com/gin-contrib/sse v0.1.0 // indirect

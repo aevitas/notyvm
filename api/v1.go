@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 
+	"aevitas.dev/veiled/inbound"
 	"aevitas.dev/veiled/names"
 	"aevitas.dev/veiled/rng"
 	"github.com/gin-gonic/gin"
@@ -58,4 +59,15 @@ func (s *Server) GenerateRandomNames(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, ret)
+}
+
+func (s *Server) HandleInbound(ctx *gin.Context) {
+	err := inbound.ProcessInboundEmail(ctx, s.Cache)
+
+	if err != nil {
+		ctx.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, nil)
 }

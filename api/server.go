@@ -3,19 +3,25 @@ package api
 import (
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/patrickmn/go-cache"
 )
 
 type Server struct {
 	Router *gin.Engine
+	Cache  *cache.Cache
 }
 
 func (s *Server) Init() {
 	s.Router = gin.Default()
 
+	s.Cache = cache.New(60*time.Minute, 90*time.Minute)
+
 	s.Router.GET("v1/persons/random", s.GenerateRandomNames)
 	s.Router.GET("v1/persons/:seed", s.GetSeededName)
+	s.Router.POST("/inbound", s.HandleInbound)
 }
 
 func (s *Server) Start(ep string) {
