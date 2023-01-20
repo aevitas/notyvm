@@ -74,6 +74,7 @@ func (s *Server) GetInbox(ctx *gin.Context) {
 
 	p := names.GeneratePerson(seed)
 
+	var inbox messaging.Inbox
 	ib, f := s.Cache.Get(p.EmailAddress)
 
 	if !f {
@@ -81,7 +82,9 @@ func (s *Server) GetInbox(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, ib)
+	inbox = ib.(messaging.Inbox)
+
+	ctx.JSON(http.StatusOK, inbox)
 }
 
 func (s *Server) GetMessage(ctx *gin.Context) {

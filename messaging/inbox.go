@@ -2,7 +2,7 @@ package messaging
 
 import (
 	"fmt"
-	"time"
+	"sort"
 
 	"aevitas.dev/veiled/models"
 )
@@ -17,6 +17,10 @@ func (inbox *Inbox) ListMessages() []models.Email {
 	for _, m := range inbox.Messages {
 		r = append(r, m)
 	}
+
+	sort.Slice(r[:], func(i, j int) bool {
+		return r[i].Id > r[j].Id
+	})
 
 	return r
 }
@@ -41,7 +45,7 @@ func (inbox *Inbox) AddMessage(msg models.Email) error {
 func EmptyInbox() Inbox {
 	return Inbox{
 		Messages: map[uint64]models.Email{
-			1337: {Id: 1337, Sender: "hello@veiled.io", SenderName: "Veiled", Subject: "Received emails will appear here.", Text: "Send a message to the Veiled address, and it will show up here. Try it out!", ReceivedAt: time.Now().UTC().Format(time.Layout)},
+			1337: {Id: 1337, Sender: "hello@veiled.io", SenderName: "Veiled", Subject: "Received emails will appear here.", Html: "Send a message to the Veiled address, and it will show up here. Try it out!"},
 		},
 	}
 }
