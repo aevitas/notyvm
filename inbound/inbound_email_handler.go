@@ -4,6 +4,7 @@ import (
 	"errors"
 	"log"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/oklog/ulid"
@@ -65,6 +66,8 @@ func ProcessInboundEmail(ctx *gin.Context, cache *cache.Cache) error {
 		}
 
 		inbox[m][msg.Id] = msg
+
+		cache.Set(m, inbox, 60*time.Minute)
 
 		log.Printf("delivered message %d to %s", msg.Id, m)
 	}
