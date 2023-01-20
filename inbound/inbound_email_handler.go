@@ -6,20 +6,14 @@ import (
 	"strings"
 	"time"
 
+	"aevitas.dev/veiled/messaging"
+	"aevitas.dev/veiled/models"
+
 	"github.com/gin-gonic/gin"
 	"github.com/oklog/ulid"
 	"github.com/patrickmn/go-cache"
 	"github.com/sendgrid/sendgrid-go/helpers/inbound"
 )
-
-type email struct {
-	Id         uint64   `json:"id"`
-	Sender     string   `json:"sender"`
-	Recipients []string `json:"recipients"`
-	SenderName string   `json:"sender_name"`
-	Subject    string   `json:"subject"`
-	Text       string   `json:"text"`
-}
 
 func ProcessInboundEmail(ctx *gin.Context, cache *cache.Cache) error {
 	parsed, err := inbound.Parse(ctx.Request)
@@ -28,7 +22,7 @@ func ProcessInboundEmail(ctx *gin.Context, cache *cache.Cache) error {
 		log.Fatal(err)
 	}
 
-	msg := email{
+	msg := models.Email{
 		Id:         ulid.Now(),
 		Sender:     parsed.Envelope.From,
 		Recipients: parsed.Envelope.To,
@@ -53,19 +47,21 @@ func ProcessInboundEmail(ctx *gin.Context, cache *cache.Cache) error {
 			continue
 		}
 
-		inbox := map[string]map[uint64]email{
+		inbox := map[string]messaging.Inbox{
 			m: {
-				ulid.Now(): email{Sender: "hello@veiled.io", SenderName: "Veiled", Subject: "Received messages will appear here."},
+				Messages: map[uint64]models.Email{
+					ulid.Now(): {Sender: "hello@veiled.io", SenderName: "Veiled", Subject: "Received messages will appear here."},
+				},
 			},
 		}
 		ib, f := cache.Get(m)
 
 		if f {
-			inbox = ib.(map[string]map[uint64]email)
+			inbox = ib.(map[string]messaging.Inbox)
 			log.Printf("inbox for %s retrieved from cache", m)
 		}
 
-		inbox[m][msg.Id] = msg
+		inbox[m].Messages[msg.Id] = msg
 
 		cache.Set(m, inbox, 60*time.Minute)
 
