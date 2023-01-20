@@ -47,21 +47,19 @@ func ProcessInboundEmail(ctx *gin.Context, cache *cache.Cache) error {
 			continue
 		}
 
-		inbox := map[string]messaging.Inbox{
-			m: {
-				Messages: map[uint64]models.Email{
-					ulid.Now(): {Sender: "hello@veiled.io", SenderName: "Veiled", Subject: "Received messages will appear here."},
-				},
+		inbox := messaging.Inbox{
+			Messages: map[uint64]models.Email{
+				ulid.Now(): {Sender: "hello@veiled.io", SenderName: "Veiled", Subject: "Received messages will appear here."},
 			},
 		}
 		ib, f := cache.Get(m)
 
 		if f {
-			inbox = ib.(map[string]messaging.Inbox)
+			inbox = ib.(messaging.Inbox)
 			log.Printf("inbox for %s retrieved from cache", m)
 		}
 
-		inbox[m].Messages[msg.Id] = msg
+		inbox.Messages[msg.Id] = msg
 
 		cache.Set(m, inbox, 60*time.Minute)
 
