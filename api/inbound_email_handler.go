@@ -29,6 +29,7 @@ func ProcessInboundEmail(ctx *gin.Context, cache *cache.Cache) error {
 		SenderName: parsed.Headers["From"],
 		Text:       parsed.TextBody,
 		Subject:    parsed.ParsedValues["subject"],
+		ReceivedAt: parsed.Headers["Date"],
 	}
 
 	dkim := strings.Contains(parsed.ParsedValues["dkim"], "pass")

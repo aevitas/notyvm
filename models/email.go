@@ -7,4 +7,5 @@ type Email struct {
 	SenderName string   `json:"sender_name"`
 	Subject    string   `json:"subject"`
 	Text       string   `json:"text"`
+	ReceivedAt string   `json:"received_at"`
 }

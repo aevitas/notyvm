@@ -2,6 +2,7 @@ package messaging
 
 import (
 	"fmt"
+	"time"
 
 	"aevitas.dev/veiled/models"
 )
@@ -40,7 +41,7 @@ func (inbox *Inbox) AddMessage(msg models.Email) error {
 func EmptyInbox() Inbox {
 	return Inbox{
 		Messages: map[uint64]models.Email{
-			1337: {Id: 1337, Sender: "hello@veiled.io", SenderName: "Veiled", Subject: "Received emails will appear here.", Text: "Send a message to the Veiled address, and they'll show up here. Try it out!"},
+			1337: {Id: 1337, Sender: "hello@veiled.io", SenderName: "Veiled", Subject: "Received emails will appear here.", Text: "Send a message to the Veiled address, and it will show up here. Try it out!", ReceivedAt: time.Now().UTC().Format(time.Layout)},
 		},
 	}
 }
