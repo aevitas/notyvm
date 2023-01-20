@@ -47,11 +47,7 @@ func ProcessInboundEmail(ctx *gin.Context, cache *cache.Cache) error {
 			continue
 		}
 
-		inbox := messaging.Inbox{
-			Messages: map[uint64]models.Email{
-				ulid.Now(): {Sender: "hello@veiled.io", SenderName: "Veiled", Subject: "Received messages will appear here."},
-			},
-		}
+		inbox := messaging.EmptyInbox()
 		ib, f := cache.Get(m)
 
 		if f {

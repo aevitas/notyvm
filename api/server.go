@@ -21,7 +21,7 @@ func (s *Server) Init() {
 
 	s.Router.GET("v1/persons/random", s.GenerateRandomNames)
 	s.Router.GET("v1/persons/:seed", s.GetSeededName)
-	s.Router.GET("v1/inbox/:seed", s.ListInboxMessages)
+	s.Router.GET("v1/inbox/:seed", s.GetInbox)
 	s.Router.POST("/inbound", s.HandleInbound)
 }
 

@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"aevitas.dev/veiled/inbound"
+	"aevitas.dev/veiled/messaging"
 	"aevitas.dev/veiled/models"
 	"aevitas.dev/veiled/names"
 	"aevitas.dev/veiled/rng"
@@ -61,7 +62,7 @@ func (s *Server) HandleInbound(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, nil)
 }
 
-func (s *Server) ListInboxMessages(ctx *gin.Context) {
+func (s *Server) GetInbox(ctx *gin.Context) {
 	arg := ctx.Param("seed")
 	seed, err := strconv.Atoi(arg)
 
@@ -80,7 +81,7 @@ func (s *Server) ListInboxMessages(ctx *gin.Context) {
 	ib, f := s.Cache.Get(p.EmailAddress)
 
 	if !f {
-		ctx.AbortWithStatus(http.StatusNotFound)
+		ctx.JSON(http.StatusOK, messaging.EmptyInbox())
 		return
 	}
 
