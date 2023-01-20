@@ -2,23 +2,15 @@ package api
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 	"strconv"
-	"strings"
 
 	"aevitas.dev/veiled/inbound"
+	"aevitas.dev/veiled/models"
 	"aevitas.dev/veiled/names"
 	"aevitas.dev/veiled/rng"
 	"github.com/gin-gonic/gin"
 )
-
-type Person struct {
-	Seed         int    `json:"seed"`
-	FirstName    string `json:"first_name"`
-	LastName     string `json:"last_name"`
-	EmailAddress string `json:"email_address"`
-}
 
 func (s *Server) GetSeededName(ctx *gin.Context) {
 	arg := ctx.Param("seed")
@@ -34,9 +26,7 @@ func (s *Server) GetSeededName(ctx *gin.Context) {
 		return
 	}
 
-	fn, ln := names.GenerateName(seed)
-
-	p := Person{Seed: seed, FirstName: fn, LastName: ln, EmailAddress: strings.ToLower(fmt.Sprintf("%s.%s@isveiled.com", fn, ln))}
+	p := names.GeneratePerson(seed)
 
 	ctx.JSON(http.StatusOK, p)
 }
@@ -49,12 +39,11 @@ func (s *Server) GenerateRandomNames(ctx *gin.Context) {
 		num = 1
 	}
 
-	var ret []Person
+	var ret []models.Person
 	for i := 0; i < num; i++ {
 		seed := rng.RandomNumber()
-		fn, ln := names.GenerateName(seed)
+		p := names.GeneratePerson(seed)
 
-		p := Person{Seed: seed, FirstName: fn, LastName: ln, EmailAddress: strings.ToLower(fmt.Sprintf("%s.%s@isveiled.com", fn, ln))}
 		ret = append(ret, p)
 	}
 
@@ -70,4 +59,8 @@ func (s *Server) HandleInbound(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, nil)
+}
+
+func (s *Server) ListInboxMessages(ctx *gin.Context) {
+
 }

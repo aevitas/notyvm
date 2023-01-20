@@ -4,9 +4,18 @@ import (
 	"log"
 	"os"
 	"strings"
+
+	"aevitas.dev/veiled/models"
 )
 
-func GenerateName(seed int) (string, string) {
+func GeneratePerson(seed int) models.Person {
+	fn, ln := generateName(seed)
+	e, _ := GetEmailAddress(fn, ln)
+
+	return models.Person{Seed: seed, FirstName: fn, LastName: ln, EmailAddress: e}
+}
+
+func generateName(seed int) (string, string) {
 	fn := getFirstNames()
 	ln := getLastNames()
 
