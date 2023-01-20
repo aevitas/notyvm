@@ -29,6 +29,7 @@ func ProcessInboundEmail(ctx *gin.Context, cache *cache.Cache) error {
 		SenderName: parsed.Headers["From"],
 		Text:       parsed.TextBody,
 		Subject:    parsed.ParsedValues["subject"],
+		Html:       parsed.ParsedValues["html"],
 		ReceivedAt: parsed.Headers["Date"],
 	}
 
