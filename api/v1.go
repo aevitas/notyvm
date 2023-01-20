@@ -62,5 +62,27 @@ func (s *Server) HandleInbound(ctx *gin.Context) {
 }
 
 func (s *Server) ListInboxMessages(ctx *gin.Context) {
+	arg := ctx.Param("seed")
+	seed, err := strconv.Atoi(arg)
 
+	if seed < 0 {
+		ctx.AbortWithError(http.StatusBadRequest, errors.New("seed can not be negative"))
+		return
+	}
+
+	if err != nil {
+		ctx.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+
+	p := names.GeneratePerson(seed)
+
+	ib, f := s.Cache.Get(p.EmailAddress)
+
+	if !f {
+		ctx.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, ib)
 }
