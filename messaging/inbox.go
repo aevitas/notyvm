@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"aevitas.dev/veiled/models"
-	"github.com/oklog/ulid"
 )
 
 type Inbox struct {
@@ -39,10 +38,9 @@ func (inbox *Inbox) AddMessage(msg models.Email) error {
 }
 
 func EmptyInbox() Inbox {
-	i := ulid.Now()
 	return Inbox{
 		Messages: map[uint64]models.Email{
-			i: {Id: i, Sender: "hello@veiled.io", SenderName: "Veiled", Subject: "Received messages will appear here."},
+			1337: {Id: 1337, Sender: "hello@veiled.io", SenderName: "Veiled", Subject: "Received emails will appear here.", Text: "Send a message to the Veiled address, and they'll show up here. Try it out!"},
 		},
 	}
 }

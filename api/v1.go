@@ -13,8 +13,7 @@ import (
 )
 
 func (s *Server) GetSeededName(ctx *gin.Context) {
-	arg := ctx.Param("seed")
-	seed, err := strconv.Atoi(arg)
+	seed, err := strconv.Atoi(ctx.Param("seed"))
 
 	if seed < 0 {
 		ctx.AbortWithError(http.StatusBadRequest, errors.New("seed can not be negative"))
@@ -32,8 +31,7 @@ func (s *Server) GetSeededName(ctx *gin.Context) {
 }
 
 func (s *Server) GenerateRandomNames(ctx *gin.Context) {
-	count := ctx.Query("count")
-	num, err := strconv.Atoi(count)
+	num, err := strconv.Atoi(ctx.Query("count"))
 
 	if err != nil {
 		num = 1
@@ -62,8 +60,7 @@ func (s *Server) HandleInbound(ctx *gin.Context) {
 }
 
 func (s *Server) GetInbox(ctx *gin.Context) {
-	arg := ctx.Param("seed")
-	seed, err := strconv.Atoi(arg)
+	seed, err := strconv.Atoi(ctx.Param("seed"))
 
 	if seed < 0 {
 		ctx.AbortWithError(http.StatusBadRequest, errors.New("seed can not be negative"))
@@ -85,4 +82,32 @@ func (s *Server) GetInbox(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, ib)
+}
+
+func (s *Server) GetMessage(ctx *gin.Context) {
+	seed, _ := strconv.Atoi(ctx.Param("seed"))
+	id, _ := strconv.Atoi(ctx.Param("id"))
+
+	if seed < 0 || id < 0 {
+		ctx.AbortWithError(http.StatusBadRequest, errors.New("seed and message id can not be negative"))
+		return
+	}
+
+	p := names.GeneratePerson(seed)
+
+	inbox := messaging.EmptyInbox()
+	ib, f := s.Cache.Get(p.EmailAddress)
+
+	if f {
+		inbox = ib.(messaging.Inbox)
+	}
+
+	m := inbox.GetMessage(uint64(id))
+
+	if m == nil {
+		ctx.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, m)
 }
