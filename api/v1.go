@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"aevitas.dev/veiled/inbound"
 	"aevitas.dev/veiled/messaging"
 	"aevitas.dev/veiled/models"
 	"aevitas.dev/veiled/names"
@@ -52,7 +51,7 @@ func (s *Server) GenerateRandomNames(ctx *gin.Context) {
 }
 
 func (s *Server) HandleInbound(ctx *gin.Context) {
-	err := inbound.ProcessInboundEmail(ctx, s.Cache)
+	err := ProcessInboundEmail(ctx, s.Cache)
 
 	if err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
