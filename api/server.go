@@ -24,6 +24,8 @@ func (s *Server) Init() {
 	s.Router.GET("v1/inbox/:seed", s.GetInbox)
 	s.Router.GET("v1/inbox/:seed/:id", s.GetMessage)
 	s.Router.POST("/inbound", s.HandleInbound)
+
+	s.Router.GET("/healthz", func(ctx *gin.Context) { ctx.String(http.StatusOK, "healthy") })
 }
 
 func (s *Server) Start(ep string) {
